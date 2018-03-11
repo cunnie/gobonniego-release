@@ -1,0 +1,38 @@
+---
+# Colocated is useful when testing, eliminates repeated creates/teardowns.
+#
+# bosh -e vbox -d gobonniego_colocated deploy manifests/example-colocated.yml
+# bosh -e vbox -d gobonniego_colocated run-errand gobonniego
+#   Fancy JSON Output
+# bosh -e vbox -d gobonniego_colocated run-errand gobonniego --json | jq -r .Tables[].Rows[].stdout
+name: gobonniego_colocated
+
+instance_groups:
+- name: colocated_vm
+  azs: [z1]
+  instances: 1
+  jobs:
+  - name: gobonniego
+    release: gobonniego
+    properties:
+      args: -v -size 0.5 -iops-duration 1.0 -json
+      dir: /var/vcap/data
+  vm_type: default
+  stemcell: default
+  networks:
+  - name: default
+
+releases:
+- name: gobonniego
+  version: latest
+
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: latest
+
+update:
+  canaries: 2
+  max_in_flight: 1
+  canary_watch_time: 5000-60000
+  update_watch_time: 5000-60000

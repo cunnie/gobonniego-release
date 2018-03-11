@@ -1,0 +1,21 @@
+set -ex
+
+# the `echo` and `pwd` statements are for troubleshooting failed builds
+
+# BOSH_INSTALL_TARGET=/var/vcap/packages/gobonniego
+echo $BOSH_INSTALL_TARGET
+
+# PWD=/var/vcap/data/compile/gobonniego
+pwd
+
+source /var/vcap/packages/golang-1.10-linux/bosh/compile.env
+# GOPATH=/var/vcap/data/compile/gobonniego
+echo $GOPATH
+
+# uncomment when debugging package compilation
+# sleep 3600
+
+# tar file has Golang-style source directory `src/github.com/cunnie/gobonniego`
+tar xzvf gobonniego/gobonniego-1.0.5.tgz
+
+go build -o $BOSH_INSTALL_TARGET/bin/gobonniego src/github.com/cunnie/gobonniego/gobonniego/gobonniego.go

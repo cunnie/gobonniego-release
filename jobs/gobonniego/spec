@@ -1,0 +1,21 @@
+---
+name: gobonniego
+
+templates:
+  run.sh.erb: bin/run
+
+packages:
+- gobonniego
+
+properties:
+  args:
+    description: |
+      Command-line arguments to gobonniego; don't include the directory
+      (`-dir`), that's addressed by the `.dir` property.
+    default: ""
+  dir:
+    description: |
+      The directory in which `gobonniego` runs its tests. If the directory
+      doesn't exist, it will be created. The directory is appended to the
+      `args` property above.
+    default: /var/vcap/data/gobonniego
