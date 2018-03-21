@@ -5,4 +5,4 @@ dependencies:
 - golang-1.10-linux
 
 files:
-- gobonniego/gobonniego-1.0.5.tgz
+- gobonniego/gobonniego-1.0.7.tgz

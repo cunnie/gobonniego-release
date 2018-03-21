@@ -2,5 +2,4 @@
 
 GOBONNIEGO_DIR=<%= p('dir') %>
 mkdir -p $GOBONNIEGO_DIR
-sudo chown vcap $GOBONNIEGO_DIR
 /var/vcap/packages/gobonniego/bin/gobonniego -dir $GOBONNIEGO_DIR <%= p('args') %>
