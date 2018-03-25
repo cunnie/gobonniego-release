@@ -58,4 +58,8 @@ bosh create-release \
   --version ${VERSION} --force
 git add -N releases/
 git add -p
+git ci -v
+git tag $VERSION
+git push
+git push --tags
 ```
