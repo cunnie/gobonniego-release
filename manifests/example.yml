@@ -6,7 +6,7 @@ name: gobonniego
 
 instance_groups:
 - name: vm_to_benchmark
-  azs: [z1]
+  # azs: [z1]
   lifecycle: errand
   instances: 1
   jobs:

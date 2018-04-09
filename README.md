@@ -23,8 +23,8 @@ bosh -e vbox -d gobonniego run-errand gobonniego
 Bumping version (e.g. to 1.0.7):
 
 ```
-export OLD_VERSION=1.0.6
-export VERSION=1.0.7
+export OLD_VERSION=1.0.8
+export VERSION=1.0.9
 mkdir /tmp/go.$$
 export GOPATH=/tmp/go.$$
 cd $GOPATH
