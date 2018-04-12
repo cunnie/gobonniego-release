@@ -1,0 +1,25 @@
+name: gobonniego
+version: 1.0.9
+commit_hash: 163ce52
+uncommitted_changes: true
+jobs:
+- name: gobonniego
+  version: 532b64ca966d0f0b1e1647979faa83a306217bee
+  fingerprint: 532b64ca966d0f0b1e1647979faa83a306217bee
+  sha1: 02eb1ea2bf461eb46730eefca74b06b40c6d0d8f
+packages:
+- name: gobonniego
+  version: 32c93d5c9e85a17309f319d568f44cc630e8b0c5
+  fingerprint: 32c93d5c9e85a17309f319d568f44cc630e8b0c5
+  sha1: 24679f46b8a5d8cb082fb113c472e5f9dcb875c6
+  dependencies:
+  - golang-1.10-linux
+- name: golang-1.10-linux
+  version: 48c842421b6f05acf88dc6ec17f7574dade28a86
+  fingerprint: 48c842421b6f05acf88dc6ec17f7574dade28a86
+  sha1: e9a18aebf2c407ce17423c22c913b6612cf4b75f
+  dependencies: []
+license:
+  version: 0fbc9511a7e7f3a4d2f1af47f5ed327237b5f06c
+  fingerprint: 0fbc9511a7e7f3a4d2f1af47f5ed327237b5f06c
+  sha1: 6427a24b454a6f3ff41dcdaedb7bc92416597a89
