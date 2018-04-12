@@ -49,7 +49,7 @@ vim config/blobs.yml
 bosh create-release --force
 bosh -e vbox upload-release
 bosh -e vbox -n -d gobonniego \
-  deploy manifests/example.yml --recreate
+  deploy manifests/bosh-lite.yml --recreate
 bosh -e vbox -d gobonniego run-errand gobonniego
 bosh upload-blobs
 bosh create-release \
