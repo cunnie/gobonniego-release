@@ -2,64 +2,69 @@
 
 [GoBonnieGo](https://github.com/cunnie/gobonniego) BOSH Release (disk benchmarking tool)
 
-```
+## Upload The Release
+
+```bash
 bosh upload-release --sha1=7cb7a231c4231ef5cacc4b89208e72f468afa2cc https://github.com/cunnie/gobonniego-release/releases/download/1.0.5/gobonniego-release-1.0.5.tgz
 ```
 
-Look in the manifests subdirectory for examples on how to use.
+## Example
 
-## Developer Notes
+On Google's Cloud, let's test a 256 GiB _pd-standard_ disk.
 
-Rapid testing:
+First, let's create a Cloud Config that has the disk we
+want to test:
 
+```yaml
+disk_types:
+- name: pd-standard-256
+  disk_size: 262_144
+  cloud_properties:
+    type: pd-standard
 ```
- # make changes
-bosh create-release --force
-bosh -e vbox upload-release
-bosh -e vbox -d gobonniego -n deploy manifests/example.yml
-bosh -e vbox -d gobonniego run-errand gobonniego
+
+Next, let's upload our configuration to our BOSH Director:
+
+```bash
+bosh update-config --type=cloud --name=gobonniego gce-cc.yml
 ```
 
-Bumping version (e.g. to 1.0.7):
+Create a BOSH deployment manifest (`gobonniego.yml`):
 
+```yaml
+name: gobonniego
+
+instance_groups:
+- name: pd-standard-256
+  lifecycle: errand
+  instances: 1
+  jobs:
+  - name: gobonniego
+    release: gobonniego
+    properties:
+      dir: /var/vcap/store/gobonniego
+      args: -seconds 86400 -iops-duration 60 -json
+  persistent_disk_type: pd-standard-256
 ```
-export OLD_VERSION=1.0.9
-export VERSION=1.0.10
-mkdir /tmp/go.$$
-export GOPATH=/tmp/go.$$
-cd $GOPATH
-go get github.com/cunnie/gobonniego
-  # ignore `no Go files in ...`
-cd src/github.com/cunnie/gobonniego
-go get ...
-cd -
-tar czvf \
-  ~/workspace/gobonniego-release/blobs/gobonniego/gobonniego-${VERSION}.tgz \
-  src
-cd ~/workspace/gobonniego-release
-git pull -r --autostash
-find packages/gobonniego -type f -print0 |
-  xargs -0 perl -pi -e \
-  "s/gobonniego-${OLD_VERSION}/gobonniego-${VERSION}/g"
-bosh add-blob \
-  blobs/gobonniego/gobonniego-${VERSION}.tgz \
-  gobonniego/gobonniego-${VERSION}.tgz
-vim config/blobs.yml
-  # delete `gobonniego/gobonniego-${OLD_VERSION}.tgz` stanza
-bosh create-release --force
-bosh -e vbox upload-release
-bosh -e vbox -n -d gobonniego \
-  deploy manifests/bosh-lite.yml --recreate
-bosh -e vbox -d gobonniego run-errand gobonniego
-bosh upload-blobs
-bosh create-release \
-  --final \
-  --tarball ~/Downloads/gobonniego-release-${VERSION}.tgz \
-  --version ${VERSION} --force
-git add -N releases/
-git add -p
-git ci -v
-git tag $VERSION
-git push
-git push --tags
+
+Deploy our manifest:
+
+```bash
+bosh -d gobonniego deploy gobonniego.yml
 ```
+
+Instruct BOSH to run the errand, specifying all output in JSON. Use `jq` to extract the output of the BOSH errand (which also happens to be JSON), and save that to a file:
+
+```bash
+bosh -e gce -d gobonniego run-errand pd-standard-256 --json |
+  jq -r .Tables[].Rows[].stdout > gce_pd-standard-256.json
+```
+
+Look
+[here](https://github.com/cunnie/deployments/tree/b8c53bde94133aca4840465a55d403281e6de9ea/gobonniego)
+for a real-world example of Cloud Configs and manifests used to benchmark many
+different kinds of disks.
+
+### Developer Notes
+
+Developer notes, such as building and test a release, are available [here](docs/DEVELOPER.md).
